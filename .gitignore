@@ -1,0 +1,45 @@
+# ----------------------------
+# 🔐 ENV files (VERY IMPORTANT)
+# ----------------------------
+.env
+*.env
+
+# ----------------------------
+# 🐍 Python (backend-ai)
+# ----------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+venv/
+.env/
+
+# Qdrant / local vector DB
+local_qdrant/
+
+# ----------------------------
+# 🟢 Node.js (backend-node + frontend)
+# ----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ----------------------------
+# ⚛️ Frontend (Vite/React)
+# ----------------------------
+dist/
+build/
+
+# ----------------------------
+# 📦 OS / Editor junk
+# ----------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+
+# ----------------------------
+# 🧠 Misc
+# ----------------------------
+*.log
