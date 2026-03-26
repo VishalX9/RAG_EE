@@ -10,7 +10,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_huggingface import HuggingFaceEmbeddings 
 from langchain_qdrant import QdrantVectorStore
 
-# ------------------ INIT ------------------
+
 load_dotenv()
 
 app = FastAPI()
@@ -35,16 +35,17 @@ embeddings = HuggingFaceEmbeddings(
     model_name="all-MiniLM-L6-v2"
 )
 
-# ------------------ VECTOR DB ------------------
+
 qdrant = QdrantVectorStore.from_existing_collection(
     embedding=embeddings,
     collection_name="gate_ee_materials",
-    path="./local_qdrant",
+    url=os.getenv("QUADRANT_URL"),
+    api_key=os.getenv("QUADRANT_API_KEY"),
 )
 
 retriever = qdrant.as_retriever(search_kwargs={"k": 3})
 
-# ------------------ LATEX RULES (SAFE VERSION) ------------------
+
 LATEX_RULES = """
 STRICT FORMATTING RULES:
 - Use LaTeX for ALL math.
@@ -55,20 +56,20 @@ STRICT FORMATTING RULES:
 - Use \\cdot for multiplication when needed.
 """
 
-# ------------------ REQUEST MODEL ------------------
+
 class QuestionRequest(BaseModel):
     question: str
     image: Optional[str] = None
 
-# ------------------ ROUTE ------------------
+
 @app.post("/ask-gate-bot")
 def ask_gate_bot(request: QuestionRequest):
     try:
-        # 1. Retrieve context
+
         docs = retriever.invoke(request.question)
         context_text = "\n\n".join([doc.page_content for doc in docs])
 
-        # 2. System prompt (NO TEMPLATE PARSING BUG)
+
         sys_instructions = f"""
 You are an expert Electrical Engineering tutor for GATE exam.
 
@@ -98,7 +99,7 @@ If image is provided, analyze it carefully.
             HumanMessage(content=human_content)
         ]
 
-        # 5. LLM call
+
         response = llm.invoke(messages)
 
         return {
@@ -116,5 +117,5 @@ If image is provided, analyze it carefully.
 @app.get("/")
 def read_root():
     return {
-        "message": "✅ Python RAG Engine is running with Qdrant + Gemini!"
+        "message": " Python RAG Engine is running with Qdrant + Gemini!"
     }
