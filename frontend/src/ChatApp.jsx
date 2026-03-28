@@ -8,6 +8,7 @@ import 'katex/dist/katex.min.css'
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import { Send, Zap, Sun, Moon, Plus, MessageSquare, Trash2, PanelLeftClose, PanelLeftOpen, LogOut, Paperclip, X, Image as ImageIcon } from 'lucide-react'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const buildStyles = (dark) => `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
@@ -404,7 +405,7 @@ export default function ChatApp() {
 
     const fetchHistory = async () => {
       try {
-        const res = await axios.get('http://localhost:5001/api/chat/history', {
+        const res = await axios.get(`${BASE_URL}/api/chat/history`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         if (res.data && res.data.length > 0) {
@@ -488,8 +489,7 @@ export default function ChatApp() {
     }))
 
     try {
-      const res = await axios.post(
-        'http://localhost:5001/api/chat/ask-ai',
+      const res = await axios.post(`${BASE_URL}/api/chat/ask-ai`,
         { question: q, image: imgSnapshot },
         { headers: { Authorization: `Bearer ${token}` } }
       )
