@@ -9,15 +9,25 @@ exports.askAI = async (req, res) => {
         const pythonResponse = await fetch(process.env.PYTHON_API_URL + "/ask-gate-bot", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ question, image }) // Added image here!
+            body: JSON.stringify({ question, image }) 
         });
         
+        // NEW: Check if the Python server actually succeeded BEFORE parsing JSON
+        if (!pythonResponse.ok) {
+            // If it failed, read the raw text (even if it's an HTML error page) so we can see it
+            const errorText = await pythonResponse.text(); 
+            console.error(`PYTHON API FAILED - Status: ${pythonResponse.status}. Details:`, errorText);
+            
+            // Return early so we don't crash the server
+            return res.status(500).json({ error: "The Python AI engine failed to respond correctly." });
+        }
+
         const pythonData = await pythonResponse.json();
 
-        // 3. Save the chat to MongoDB (We won't save the image string to save database space, just the text)
+        // 3. Save the chat to MongoDB
         const newChat = new Chat({ 
             userId: userId, 
-            question: image ? ` ${question}` : question, 
+            question: image ? `[Image Uploaded] ${question}` : question, 
             answer: pythonData.answer 
         });
         await newChat.save();
