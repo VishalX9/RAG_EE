@@ -10,6 +10,8 @@ langchain-text-splitters
 
 langchain-qdrant
 langchain-google-genai
+langchain-huggingface
+sentence-transformers
 
 qdrant-client
 
