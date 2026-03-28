@@ -23,7 +23,7 @@ app.use('/api/chat', chatRoutes);
 
 
 app.get('/', (req, res) => {
-    res.send('e-nirīkṣaṇ Node.js API is running!');
+    res.send('Node.js API is running!');
 });
 
 app.listen(PORT, () => {
