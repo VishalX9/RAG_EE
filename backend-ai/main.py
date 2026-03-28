@@ -7,9 +7,8 @@ import os
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_huggingface import HuggingFaceEmbeddings 
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_qdrant import QdrantVectorStore
-from langchain_huggingface import HuggingFaceEmbeddings
 
 load_dotenv()
 
@@ -23,19 +22,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-print("🚀 Booting up GATE AI Engine...")
-
 # ------------------ MODELS ------------------
+# This connects to Google for Chat
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
+    model="gemini-1.5-flash",
     google_api_key=os.getenv("GEMINI_API_KEY")
 )
 
-embeddings = HuggingFaceEmbeddings(
-    model_name="all-MiniLM-L6-v2"
+# This connects to HuggingFace API for Embeddings (Uses ZERO Render RAM)
+embeddings = HuggingFaceEndpointEmbeddings(
+    model="sentence-transformers/all-MiniLM-L6-v2",
+    task="feature-extraction",
+    huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN")
 )
 
-
+# Connects to your ORIGINAL 384-dim collection
 qdrant = QdrantVectorStore.from_existing_collection(
     embedding=embeddings,
     collection_name="gate_ee_materials",
@@ -44,8 +45,6 @@ qdrant = QdrantVectorStore.from_existing_collection(
 )
 
 retriever = qdrant.as_retriever(search_kwargs={"k": 3})
-
-
 
 
 LATEX_RULES = """
