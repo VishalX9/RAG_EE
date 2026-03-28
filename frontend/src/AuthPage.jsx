@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import axios from 'axios'
-// ✅ FIX: useNavigate is imported once here, and used inside the component below
 import { useNavigate } from 'react-router-dom'
 import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowLeft, ArrowRight } from 'lucide-react'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const style = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
@@ -351,7 +351,7 @@ export default function AuthPage({ onNavigate }) {
         ? { email: form.email, password: form.password }
         : { name: form.name, email: form.email, password: form.password, stream: form.stream }
 
-      const res = await axios.post(`http://localhost:5001${endpoint}`, payload)
+      const res = await axios.post(`${BASE_URL}${endpoint}`, payload)
 
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('user', JSON.stringify(res.data.user))
