@@ -6,7 +6,7 @@ exports.askAI = async (req, res) => {
         const userId = req.user.id; 
 
         // 2. Send both to Python
-        const pythonResponse = awaitfetch(process.env.PYTHON_API_URL + "/ask-gate-bot", {
+        const pythonResponse = await fetch(process.env.PYTHON_API_URL + "/ask-gate-bot", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ question, image }) // Added image here!
