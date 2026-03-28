@@ -24,6 +24,7 @@ exports.askAI = async (req, res) => {
 
         res.json({ status: "Success", answer: pythonData.answer });
     } catch (error) {
+        console.error("ACTUAL AI ERROR:", error);
         res.status(500).json({ error: "The AI engine is currently resting." });
     }
 };
