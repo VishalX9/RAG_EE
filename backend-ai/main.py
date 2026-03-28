@@ -7,9 +7,9 @@ import os
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings 
 from langchain_qdrant import QdrantVectorStore
-
+from langchain_huggingface import HuggingFaceEmbeddings
 
 load_dotenv()
 
@@ -30,7 +30,10 @@ llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     google_api_key=os.getenv("GEMINI_API_KEY")
 )
-embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+
+embeddings = HuggingFaceEmbeddings(
+    model_name="all-MiniLM-L6-v2"
+)
 
 
 qdrant = QdrantVectorStore.from_existing_collection(
@@ -41,6 +44,8 @@ qdrant = QdrantVectorStore.from_existing_collection(
 )
 
 retriever = qdrant.as_retriever(search_kwargs={"k": 3})
+
+
 
 
 LATEX_RULES = """
