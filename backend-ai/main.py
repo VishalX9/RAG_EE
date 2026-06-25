@@ -22,21 +22,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ------------------ MODELS ------------------
-# This connects to Google for Chat
+
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     google_api_key=os.getenv("GEMINI_API_KEY")
 )
 
-# This connects to HuggingFace API for Embeddings (Uses ZERO Render RAM)
+
 embeddings = HuggingFaceEndpointEmbeddings(
     model="sentence-transformers/all-MiniLM-L6-v2",
     task="feature-extraction",
     huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN")
 )
 
-# Connects to your ORIGINAL 384-dim collection
+
 qdrant = QdrantVectorStore.from_existing_collection(
     embedding=embeddings,
     collection_name="gate_ee_materials",
@@ -85,7 +84,7 @@ If image is provided, analyze it carefully.
 {LATEX_RULES}
 """
 
-        # 3. Human input (text + optional image)
+
         if request.image:
             human_content = [
                 {"type": "text", "text": request.question},
@@ -94,7 +93,7 @@ If image is provided, analyze it carefully.
         else:
             human_content = request.question
 
-        # 4. Messages
+
         messages = [
             SystemMessage(content=sys_instructions),
             HumanMessage(content=human_content)
