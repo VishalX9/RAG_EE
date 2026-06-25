@@ -38,7 +38,7 @@ embeddings = HuggingFaceEndpointEmbeddings(
 
 qdrant = QdrantVectorStore.from_existing_collection(
     embedding=embeddings,
-    collection_name="gate_ee_materials",
+    collection_name="gate",
     url=os.getenv("QUADRANT_URL"),
     api_key=os.getenv("QUADRANT_API_KEY"),
 )
